@@ -1,75 +1,37 @@
-# Nuxt Minimal Starter
+# Project Starter
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Projekt praktycznie całkowicie backendowy, brak frontendu.
 
 ## Setup
 
-Make sure to install dependencies:
+Program działa na wersji 24.0.0 Node.js
+Wymagany jest XAMPP
+Komendy opisane później używają bash
+
+## Inicjalizacja bazy danych
+
+Komendy poniżej powinny utworzyć bazę danych z danymi produktów.
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+npx prisma migrate dev --name init
+npx prisma db seed
 ```
-
 ## Development Server
 
-Start the development server on `http://localhost:3000`:
+Uruchomić serwer `http://localhost:3000`:
 
 ```bash
 # npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## Informacje o projekcie
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Projekt posiada podstawową funkcjonalność -
+system logowania,
+middleware (zabezpieczenie przed niezalogowanymi użytkownikami),
+działający pasek postępu (update w czasie rzeczywistym),
+system ustawiania celów,
+automatyczne dodawanie danych o północy (z powodu, że serwer ten jest startowany lokalnie ta funkcja nie działa. Jeżeli projekt znajdowałby się na zwykłym serwerze skrypt powinien działać),
+kompletną bazę danych (struktóra znajduje się w pliku schema.prisma),
+endpointy obsługujące zapytania do bazy danych.
