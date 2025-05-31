@@ -13,7 +13,7 @@ Komendy opisane później używają bash
 Komendy poniżej powinny utworzyć bazę danych z danymi produktów.
 
 ```bash
-npx prisma migrate dev --name init
+npx prisma migrate dev --name setup
 npx prisma db seed
 ```
 ## Development Server
