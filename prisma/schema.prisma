@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model posilek {
+  id_posilku     Int         @id @default(autoincrement())
+  id_uzytkownika Int
+  nazwa          String
+  kalorie        Int
+  bialko         Float
+  tluszcze       Float
+  weglowodany    Float
+  data           DateTime
+
+  uzytkownik     uzytkownik  @relation(fields: [id_uzytkownika], references: [id_uzytkownika])
+
+  produkty       produkt[]   @relation("PosilekProdukty")
+
+  @@index([id_uzytkownika])
+}
+
+model produkt {
+  id_produktu    Int         @id @default(autoincrement())
+  nazwa          String
+  kalorie        Int
+  bialko         Float
+  tluszcze       Float
+  weglowodany    Float
+
+  posilki        posilek[]   @relation("PosilekProdukty")
+}
+
+model uzytkownik {
+  id_uzytkownika Int         @id @default(autoincrement())
+  login          String
+  haslo          String
+  email          String      @unique
+  cel_kaloryczny Int?
+
+  posilek        posilek[]
+}
