@@ -1,39 +1,81 @@
-<script lang="ts">
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-    };
-  },
-  methods: {
-    async loginMove(){
-      navigateTo("/signin")
-    }
-  },
-};
-</script>
-<script lang="ts" setup>
-const isLoggedIn = useCookie<boolean>('isLoggedIn')
-</script>
-
 <template>
-    <div id="main">
-      <div id="topBanner">
-        <h1>WITAMY NA BIEDNYM FITATU</h1>
-      </div>
-      <div id="appInfo">
-        <p>
-          Strona ta działa trochę jak fitatu, ale tylko trochę bo w sumie taka na budżecie jest. Miłego używania towarzyszu.
-        </p>
-        <button v-on:click="loginMove()" v-if="!isLoggedIn">JOIN US</button>
-      </div>
-    </div>
+  <main class="main-content">
+    <section class="intro">
+      <h2>Witamy w naszej aplikacji</h2>
+      <p>Strona ta działa trochę jak fitatu, ale tylko trochę, bo jest na budżecie.</p>
+      <p>Miłego używania towarzyszu.</p>
+      <img src="/images/borisW.gif" alt="placeholder" />
+    </section>
+  </main>
 </template>
 
-  <style>
-  #main{align-content: center;}
-  #topBanner{font-family: Verdana; font-size: 30px; text-align: center;}
-  #appInfo{margin: auto; width: 200px; text-align: left;}
-  button{margin: auto; background-image: linear-gradient(rgb(33, 41, 32), rgb(16, 165, 16)); color: azure; font-size: 30px; border-radius: 2px; border: none; font-family: 'Times New Roman';}
+<script setup lang="ts">
+// No interactivity needed here, yet.
+</script>
+
+<style scoped>
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  min-height: 90vh;
+}
+
+.intro {
+  background: rgba(15, 15, 15, 0.75);
+  border: 2px solid rgba(0, 255, 150, 0.3);
+  box-shadow: 0 0 25px rgba(0, 255, 100, 0.2), 0 0 80px rgba(0, 255, 200, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 2rem;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 700px;
+  transition: all 0.4s ease;
+  animation: fadeIn 1s ease-out;
+}
+
+.intro:hover {
+  transform: scale(1.015);
+  box-shadow: 0 0 30px rgba(0, 255, 150, 0.4);
+}
+
+.intro h2 {
+  font-size: 2rem;
+  color: #00ffae;
+  text-shadow: 0 0 10px #00ffae;
+  animation: pulseGlow 2s infinite;
+}
+
+.intro p {
+  font-size: 1.1rem;
+  color: #ccffe5;
+  margin-top: 0.5rem;
+}
+
+.intro img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  margin-top: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 255, 180, 0.2);
+  transition: transform 0.4s ease;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+  }
+  50% {
+    text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+  }
+}
 </style>

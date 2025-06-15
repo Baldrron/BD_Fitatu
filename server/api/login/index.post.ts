@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
   }
   prisma.$disconnect();
   if (match) {
-    return { result: true, message: "Logged in" };
+    return { result: true, message: searched.login };
   } else {
     return {
       result: false,

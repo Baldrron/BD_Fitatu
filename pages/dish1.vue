@@ -272,30 +272,39 @@ const selectedId = ref<string | null>(null)
 const finalStringInfo = ref('')
 const infoparagraph = ref('infoPar')
 
+
+// jakbym w tabeli produkty miał opis to moznabybyło tutaj zczytywać description
+//musze tu jeszcze info poprawić i wszystko będzie działać
 function redirectProductPage(id_produktu: string, event: MouseEvent) {
-  showInfo.value = true
-  selectedId.value = id_produktu
-  infoX.value = event.clientX
-  infoY.value = event.clientY
-  const item = selectedProducts.value?.find((i: any) => i.id_produktu === id_produktu)
-  if (item) finalStringInfo.value = item.nazwa.toString()
-  else infoparagraph.value = 'Not found'
+  showInfo.value = true;
+  selectedId.value = id_produktu;
+ const doc = document.documentElement;
+
+  const target = event.currentTarget as HTMLElement
+  const rect = target.getBoundingClientRect()
+
+  infoX.value = rect.left
+  infoY.value = rect.top  
+
+  console.log(infoY.value, event.clientY, doc.scrollTop)
+  const item = selectedProducts.value?.find((i: any) => i.id_produktu === id_produktu);
+  if (item) finalStringInfo.value = item.nazwa.toString();
+  else finalStringInfo.value = 'Not found';
 }
+
 
 function handleClick(event: MouseEvent) {
   const clickedElement = event.target as HTMLElement
-  if (clickedElement.id !== 'addinfo' && clickedElement.className !== 'infoButton') {
-    showInfo.value = false
-  }
+  if (clickedElement.id !== 'addinfo' && !clickedElement.classList.contains('info-button')) {
+  showInfo.value = false;
+}
 }
 </script>
 
 <template>
-  <div>
-    <div v-if="a">
-      <div v-if="a === 'sn'">Śniadanie</div>
-      <div v-else-if="a === 'ob'">Obiad</div>
-      <div v-else>Kolacja</div>
+  <div class="container">
+    <div v-if="a" class="meal-section">
+      <h2 class="meal-title">{{ dishName }}</h2>
 
       <Multiselect
         v-model="selectedProducts"
@@ -307,20 +316,23 @@ function handleClick(event: MouseEvent) {
         placeholder="Wybierz produkty"
         label="nazwa"
         track-by="id_produktu"
+        class="multiselect"
       />
 
-      <div>
-        <h3>Wybrane produkty:</h3>
-        <ul>
-          <li v-for="item in selectedProducts" :key="item.id_produktu">
-            {{ item.nazwa }} -
-            {{ (item.kalorie * getFactor(item.id_produktu)).toFixed(2) }} kcal,
-            {{ (item.weglowodany * getFactor(item.id_produktu)).toFixed(2) }} g węglowodanów,
-            {{ (item.bialko * getFactor(item.id_produktu)).toFixed(2) }} g białka,
-            {{ (item.tluszcze * getFactor(item.id_produktu)).toFixed(2) }} g tłuszczów.
+      <section class="selected-products">
+        <h3 class="section-title">Wybrane produkty:</h3>
+        <ul class="product-list">
+          <li v-for="item in selectedProducts" :key="item.id_produktu" class="product-item">
+            <div class="product-name">{{ item.nazwa }}</div>
+            <div class="product-nutrition">
+              {{ (item.kalorie * getFactor(item.id_produktu)).toFixed(2) }} kcal |
+              {{ (item.weglowodany * getFactor(item.id_produktu)).toFixed(2) }} g węgli |
+              {{ (item.bialko * getFactor(item.id_produktu)).toFixed(2) }} g białka |
+              {{ (item.tluszcze * getFactor(item.id_produktu)).toFixed(2) }} g tłuszczy
+            </div>
 
-            <div>
-              <label>
+            <div class="product-controls">
+              <label class="unit-label">
                 <input
                   type="radio"
                   :name="`unit_${item.id_produktu}`"
@@ -333,10 +345,11 @@ function handleClick(event: MouseEvent) {
                 v-if="units[item.id_produktu] === 'portion'"
                 type="number"
                 min="1"
+                class="unit-input"
                 v-model.number="portions[item.id_produktu]"
               />
 
-              <label>
+              <label class="unit-label">
                 <input
                   type="radio"
                   :name="`unit_${item.id_produktu}`"
@@ -349,34 +362,223 @@ function handleClick(event: MouseEvent) {
                 v-if="units[item.id_produktu] === 'gram'"
                 type="number"
                 min="1"
+                class="unit-input"
                 v-model.number="grams[item.id_produktu]"
               /> g
-              <button @click="(e) => redirectProductPage(item.id_produktu, e)" class="infoButton"> INFO </button>
+
+              <button
+                @click="(e) => redirectProductPage(item.id_produktu, e)"
+                class="info-button"
+                type="button"
+                aria-label="Show product info"
+              >
+                INFO
+              </button>
             </div>
           </li>
         </ul>
-        <button type="button" @click="updateMealFromDish">Update</button>
-      </div>
+
+        <button
+          type="button"
+          @click="updateMealFromDish"
+          class="save-button"
+        >
+          Zapisz / Update
+        </button>
+      </section>
     </div>
 
-
-     <div v-if="showInfo" id="addinfo" :style="{ left: infoX + 'px', top: infoY - boxHeight + 'px' }">
+    <div
+      v-if="showInfo"
+      id="addinfo"
+      :style="{ left: infoX + 'px', top: infoY - boxHeight + 'px' }"
+      class="info-popup"
+    >
       <p id="infoPar">{{ finalStringInfo }}</p>
     </div>
-    <div v-if="pending">Loading...</div>
-    <div v-else-if="error">Failed to load items.</div>
+
+    <div v-if="pending" class="status-message">Ładowanie danych...</div>
+    <div v-else-if="error" class="error-message">Błąd: {{ error }}</div>
   </div>
 </template>
 
 <style scoped>
-#addinfo {
-  position: absolute;
-  background-color: red;
+#app {
+  position: relative;
+}
+
+.container {
+  max-width: 720px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.meal-section {
+  background: #fefefe;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  padding: 2rem 2.5rem;
+}
+
+.meal-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937; /* dark slate */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.multiselect {
+  margin-bottom: 2rem;
+  --vue-multiselect-border-radius: 8px;
+  --vue-multiselect-border-color: #cbd5e1;
+  --vue-multiselect-placeholder-color: #9ca3af;
+}
+
+.selected-products {
+  background-color: #f9fafb;
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #374151;
+  border-bottom: 2px solid #60a5fa;
+  padding-bottom: 0.4rem;
+}
+
+.product-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.product-item {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.product-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.product-nutrition {
+  font-size: 0.9rem;
+  color: #4b5563;
+  user-select: none;
+}
+
+.product-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.unit-label {
+  font-size: 0.9rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.unit-input {
+  width: 60px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: border-color 0.2s ease;
+}
+
+.unit-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 5px #3b82f6;
+}
+
+.info-button {
+  margin-left: auto;
+  background-color: #2563eb;
   color: white;
-  padding: 5px;
-  width: 100px;
-  height: 60px;
-  border-radius: 4px;
-  z-index: 999;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.info-button:hover {
+  background-color: #1e40af;
+}
+
+.save-button {
+  background-color: #16a34a;
+  color: white;
+  font-weight: 700;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: #15803d;
+}
+
+.info-popup {
+  position: fixed;
+  top: v-bind(infoY + 'px');
+  left: v-bind(infoX + 'px');
+  z-index: 9999;
+  background-color: #111827;
+  color: #f9fafb;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.status-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  margin-top: 2rem;
+}
+
+.error-message {
+  text-align: center;
+  font-size: 1rem;
+  color: #dc2626;
+  margin-top: 2rem;
 }
 </style>

@@ -41,6 +41,7 @@ model uzytkownik {
   haslo          String
   email          String      @unique
   cel_kaloryczny Int?
+  stanowisko     Boolean
 
   posilek        posilek[]
 }
