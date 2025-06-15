@@ -7,8 +7,8 @@
       </div>
       <div class="navbar-right">
         <template v-if="!isLoggedIn">
-          <button @click="navigateTo('/login')">Login</button>
-          <button @click="navigateTo('/signin')">Sign Up</button>
+          <button @click="navigateTo('/login')">Zaloguj</button>
+          <button @click="navigateTo('/signin')">Zarejestruj</button>
         </template>
         <template v-else>
           <div
@@ -18,8 +18,8 @@
           >
             <button class="dropdown-button">{{ username }}</button>
             <div v-if="dropdown" class="dropdown-menu">
-              <a @click="navigateTo('/logged')">Your Page</a>
-              <a @click="logout">Logout</a>
+              <a @click="navigateTo('/logged')">Twoja Strona</a>
+              <a @click="logout">Wyloguj</a>
             </div>
           </div>
         </template>
