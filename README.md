@@ -28,3 +28,6 @@ npm run dev
 
 Niestety trzeba to zrobić ręcznie. Po stworzeniu kąta na stronie w bazie trzeba zmienić stanowisko użytkownika na TRUE (1)
 Nastepnie na stronie użytkownika powinny pojawić się dodatkowe funkcjie
+
+#Styl
+Grafiki są niezwiązane po prostu pod ręką były
