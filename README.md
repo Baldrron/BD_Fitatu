@@ -1,75 +1,30 @@
-# Nuxt Minimal Starter
+#Baza Danych
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Program jest to prosta wersja aplikacji takiej jak fitatu. Zawiera stronę główną, system logowania, dodawanie przedmiotów do posiłków jak i admin panel.
 
-## Setup
+Szybka piłka, przynudzać nie będę. Narpiew trzeba wygenerować bazę danych
 
-Make sure to install dependencies:
+```bash
+# npm
+npx prisma generate
+npx prisma db push
+npm install ts-node typescript @types/node --save-dev
+npx prisma migrate dev --name init
+npx prisma db seed
+```
+Jeżeli baza odmawia przyjęcia seeda to zamieściłem kwerendę którą ręcznie trzeba załadować do bazy (szczerze nie wiem od czego to jest zależne)
 
+#Startowanie projektu
+
+Potrzebyn XAMPP Apache i phpMyAdmin i nowej wersji Node.js
+
+Start developerski
 ```bash
 # npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
+#Dostęp do funkcji administratora
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Niestety trzeba to zrobić ręcznie. Po stworzeniu kąta na stronie w bazie trzeba zmienić stanowisko użytkownika na TRUE (1)
+Nastepnie na stronie użytkownika powinny pojawić się dodatkowe funkcjie
